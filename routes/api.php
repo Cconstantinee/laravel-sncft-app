@@ -16,7 +16,6 @@ Route::controller(ScheduleController::class)->group(function () {
 
 
 
-Route::controller(FreightOperationController::class)->group(function(){
-    Route::get('/operations/{id}', 'show');
-    Route::get('/operations', 'index');
-});
+
+
+Route::resource('/operations',FreightOperationController::class);
