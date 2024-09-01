@@ -12,12 +12,23 @@ class FreightOperationController extends Controller
         $operations = FreightOperation::with(['schedule','freight'])->get();
 
         // Check if operation exists
-        if (!$operations) {
-            return response()->json(['error' => 'Operations not found'], 404);
-        }
-
-        // Return the operation data as JSON
-        return response()->json($operations);
+        $transformedData = $operations->map(function($operation) {
+            return [
+                'operationId' => $operation->operation_id,
+                'departure' => [
+                    'location' => $operation->schedule->departure_location,
+                    'time' => $operation->schedule->departure_time->toIso8601String()
+                ],
+                'arrival' => [
+                    'location' => $operation->schedule->arrival_location,
+                    'time' => $operation->schedule->arrival_time->toIso8601String()
+                ],
+                'freight' => $operation->freight->pluck('freight_type')->toArray(), // Collect freight types into an array
+                'status' => $operation->status
+            ];
+        });
+    
+        return response()->json($transformedData);
     }
 //-------------------------------------------------------------------------------------------
     public function show($id)
