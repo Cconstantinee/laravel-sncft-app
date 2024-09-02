@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\FleetManagerController;
 use App\Http\Controllers\FreightOperationController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ScheduleController;
+use App\Models\Fleet_manager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +19,8 @@ Route::controller(ScheduleController::class)->group(function () {
 
 
 
-
+//my apis :)
 
 Route::resource('/operations',FreightOperationController::class);
+Route::resource('/locations',LocationController::class);
+Route::resource('/fleet',FleetManagerController::class);
