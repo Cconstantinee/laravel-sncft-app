@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\FreightOperation;
+use App\Models\Freight;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Services\FreightOperationFilterService;
+use Illuminate\Support\Facades\Log;
+
 class FreightOperationController extends Controller
 {
     protected $filterService;
@@ -52,6 +56,23 @@ class FreightOperationController extends Controller
         return response()->json($operation);
     }
 //-------------------------------------------------------------------------------------------
+public function destroy($operation_id)
+{
+    try {
+        $operation = FreightOperation::findOrFail($operation_id);
+        if ($operation->schedule_id) {
+            Log::info('Deleting associated schedule with id: ' . $operation->schedule_id);
+            Schedule::where('schedule_id', $operation->schedule_id)->delete();
+        }
+        Freight::where('operation_id', $operation_id)->update(['operation_id' => null]);
+        Log::info('Deleting operation with id: ' . $operation_id);
+        $operation->delete();
+
+        return response()->json(['message' => 'Operation and associated data deleted successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
 
     
 }
