@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\FreightOperation;
 use Illuminate\Http\Request;
-
+use App\Services\FreightOperationFilterService;
 class FreightOperationController extends Controller
 {
-    public function index()
-    {
-        $operations = FreightOperation::with(['schedule','freight'])->get();
+    protected $filterService;
 
-        // Check if operation exists
-        $transformedData = $operations->map(function($operation) {
+    public function __construct(FreightOperationFilterService $filterService)
+    {
+        $this->filterService = $filterService;
+    }
+
+    public function index(Request $request)
+    {
+        $filters = $request->all(); // Get filters from request
+        $operations = $this->filterService->filter($filters);
+
+        $transformedData = $operations->map(function ($operation) {
             return [
                 'operationId' => $operation->operation_id,
                 'departure' => [
@@ -23,11 +30,11 @@ class FreightOperationController extends Controller
                     'location' => $operation->schedule->arrival_location,
                     'time' => $operation->schedule->arrival_time->toIso8601String()
                 ],
-                'freight' => $operation->freight->pluck('freight_type')->toArray(), // Collect freight types into an array
+                'freight' => $operation->freight->pluck('freight_type')->toArray(),
                 'status' => $operation->status
             ];
         });
-    
+
         return response()->json($transformedData);
     }
 //-------------------------------------------------------------------------------------------

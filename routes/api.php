@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FleetManagerController;
+use App\Http\Controllers\FreightController;
 use App\Http\Controllers\FreightOperationController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ScheduleController;
@@ -24,3 +25,4 @@ Route::controller(ScheduleController::class)->group(function () {
 Route::resource('/operations',FreightOperationController::class);
 Route::resource('/locations',LocationController::class);
 Route::resource('/fleet',FleetManagerController::class);
+Route::resource('/freight',FreightController::class);

@@ -14,7 +14,7 @@ class Freight extends Model
     protected $primaryKey = 'freight_id';
     
     protected $fillable = [
-        'freight_name',
+        'freight_type',
         'total_units',
         'total_weight',
         'total_value',
